@@ -1,4 +1,5 @@
 <script setup>
+import BasicBox from "@/components/BasicBox.vue";
 import ContactCard from "@/components/ContactCard.vue";
 import ButtonLink from "@/components/forms/ButtonLink.vue";
 import { useContactsStore } from "@/stores/contacts";
@@ -18,7 +19,7 @@ store.getContacts();
         </ButtonLink>
         <img src="/illustration.svg" alt="Illustration" class="illustration" />
       </div>
-      <div class="starred-contacts">
+      <BasicBox class="starred-contacts">
         <h2>Starred Contacts</h2>
         <p v-if="store.contacts.allContacts.length === 0">
           You don't have any starred contacts. Star your favorite contacts to
@@ -33,7 +34,7 @@ store.getContacts();
             <ContactCard isLink v-if="contact.starred" :contact="contact" />
           </template>
         </div>
-      </div>
+      </BasicBox>
     </section>
   </main>
 </template>
@@ -78,13 +79,8 @@ p {
 }
 
 .starred-contacts {
-  background-color: white;
   flex: 1;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
+
 }
 .starred-contacts > p {
   margin: auto;

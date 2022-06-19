@@ -59,8 +59,8 @@ const removePhoneNumber = () =>
           <FormLabel for="phone-number">Phone Number</FormLabel>
           <div class="inputs">
             <FormInput name="phone-number" type="tel" required />
-            <FormSelect name="phone-number-type">
-              <option value="mobile">Mobile</option>
+            <FormSelect name="phone-number-type" required>
+              <option value="mobile" >Mobile</option>
               <option value="work">Work</option>
               <option value="home">Home</option>
             </FormSelect>

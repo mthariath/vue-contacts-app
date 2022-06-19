@@ -56,14 +56,14 @@ const toggleStarred = () => store.toggleStarred(props.contact.id);
 .wrapper {
   display: grid;
   grid-template-columns: 2rem 1fr;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0);
 }
 .wrapper:hover {
   background-color: #f5f5f5;
 }
 
 .wrapper.selected {
-  background-color: #f6f6f6;
+  background-color: #fff;
 }
 .card {
   display: flex;

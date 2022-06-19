@@ -1,4 +1,5 @@
 <script setup>
+import BasicBox from "@/components/BasicBox.vue";
 import ButtonLink from "@/components/forms/ButtonLink.vue";
 import ContactCard from "@/components/ContactCard.vue";
 import { useRoute } from "vue-router";
@@ -12,7 +13,7 @@ store.getContacts();
 <template>
   <main class="main-container">
     <section>
-      <div
+      <BasicBox
         :class="['contacts-list', $route.matched.length > 1 ? 'nested' : '']"
       >
         <header>
@@ -32,7 +33,7 @@ store.getContacts();
             <ContactCard isLink :contact="contact" />
           </template>
         </div>
-      </div>
+      </BasicBox>
       <div class="body" v-if="$route.matched.length === 1">
         <p>Select a contact to view their details.</p>
       </div>
@@ -82,11 +83,7 @@ p {
 }
 
 .contacts-list {
-  background-color: white;
   flex: 1;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
   align-self: center;
 }
 
@@ -109,7 +106,7 @@ p {
 }
 
 .contacts-list .list {
-  max-height: 75vh;
+  max-height: 70vh;
   overflow-y: auto;
   margin-top: 1rem;
 }
