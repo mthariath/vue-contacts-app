@@ -5,11 +5,11 @@ import { RouterLink, RouterView } from "vue-router";
 <template>
   <header class="main-header">
     <div class="logo">
-      <router-link to="/"> The Contacts App </router-link>
+      <router-link to="/"> <span class="icon">👥</span> <span class="mobile-hide">The Contacts App</span></router-link>
     </div>
-    <nav class="main-nav">
+    <nav class="main-nav ">
       <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
+      <RouterLink to="/contacts">Contacts</RouterLink>
     </nav>
   </header>
 
@@ -18,14 +18,22 @@ import { RouterLink, RouterView } from "vue-router";
 
 <style>
 @import "@/assets/base.css";
+
 .main-header {
   max-width: 1600px;
-  width: 95vw;
+  width: 100vw;
   margin-left: auto;
   margin-right: auto;
-  padding: 1rem 2rem;
+  padding: 2rem;
   display: flex;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   flex-direction: row;
+  /* height: 70px; */
+  background-color: var(--color-background);
 }
 
 .logo a {
@@ -33,6 +41,14 @@ import { RouterLink, RouterView } from "vue-router";
   font-weight: bold;
   color: var(--color-text-primary);
   text-decoration: none;
+  line-height: 1.5rem;
+  display: flex;
+  align-items: center;
+  grid-gap: 1rem;
+}
+
+.logo .icon {
+  font-size: 3rem;
 }
 
 nav.main-nav {
@@ -43,5 +59,13 @@ nav.main-nav {
   margin-left: auto;
   grid-gap: 1rem;
   text-decoration: none;
+}
+.main-nav a {
+  text-decoration: none;
+  color: var(--color-text-secondary);
+  font-size: 1.6rem;
+}
+.main-nav a:hover {
+  color: var(--color-text-primary);
 }
 </style>

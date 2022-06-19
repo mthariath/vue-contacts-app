@@ -25,6 +25,8 @@
 
 /* semantic color variables for this project */
 :root {
+  --color-primary: #69b824;
+
   --color-background: var(--vt-c-pale-green);
   --color-background-content: var(--vt-c-white-mute);
   --color-background-soft: var(--vt-c-white-soft);
@@ -86,5 +88,16 @@ body {
   width: 95vw;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 7rem;
   /* background-color: var(--color-background-content); */
+}
+
+.mobile-hide {
+  display: block;
+}
+
+@media(max-width: 768px) {
+  .mobile-hide {
+    display: none;
+  }
 }

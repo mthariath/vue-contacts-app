@@ -9,22 +9,24 @@ store.getContacts();
 <template>
   <main class="main-container">
     <section>
-      <div class="hero-text">
-        <h1>Welcome!</h1>
-        <p>You have {{ store.contacts.allContacts.length }} contacts.</p>
-        <img src="/illustration.svg" alt="Illustration" class="illustration"/>
-      </div>
-      <div class="starred-contacts">
-        <h2>Starred Contacts</h2>
+      <div :class="['contacts-list', $route.params.id ? 'selected' : '']">
+        <h2>All Contacts</h2>
         <div class="list" v-if="store.contacts.allContacts">
+          <p v-if="store.contacts.allContacts.length === 0">
+            You have no contacts. Add one to get started!
+          </p>
           <template
             v-for="contact of store.contacts.allContacts"
             v-bind:key="contact.id"
           >
-            <ContactCard isLink v-if="contact.starred" :contact="contact" />
+            <ContactCard isLink :contact="contact" />
           </template>
         </div>
       </div>
+      <div class="body" v-if="!$route.params.id">
+        <p>Select a contact to view their details.</p>
+      </div>
+      <router-view></router-view>
     </section>
   </main>
 </template>
@@ -34,15 +36,15 @@ section {
   display: flex;
   flex-direction: row;
   width: 100%;
+  margin-bottom: auto;
 }
 
-@media (max-width: 768px) {
-  section {
-    flex-direction: column;
-  }
-}
-.hero-text {
+.body {
   flex: 1;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.4);
 }
 
 h1 {
@@ -58,21 +60,14 @@ p {
   margin-bottom: 1rem;
 }
 
-.illustration {
-  width: 100%;
-  max-width: 500px;
-  margin-bottom: 1rem;
-  
-}
-
-.starred-contacts {
+.contacts-list {
   background-color: white;
   flex: 1;
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 }
-.starred-contacts h2 {
+.contacts-list h2 {
   font-size: 1.1rem;
   font-weight: 900;
   color: var(--color-text-primary);
@@ -80,9 +75,15 @@ p {
   text-transform: uppercase;
 }
 
-.starred-contacts .list {
-  max-height: 60vh;
+.contacts-list .list {
+  max-height: 85vh;
   overflow-y: auto;
   margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .body {
+    display: flex;
+  }
 }
 </style>
