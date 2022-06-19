@@ -109,7 +109,7 @@ p {
 }
 
 .contacts-list .list {
-  max-height: 85vh;
+  max-height: 75vh;
   overflow-y: auto;
   margin-top: 1rem;
 }

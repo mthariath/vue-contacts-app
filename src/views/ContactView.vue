@@ -109,11 +109,11 @@ article {
   align-items: center;
   justify-content: center;
   margin: auto;
-  margin-top: 1.2rem;
+  /* margin-top: 1.2rem; */
 }
 .contact-body {
   display: flex;
-  margin-bottom: auto;
+  /* margin-bottom: auto; */
   flex: 1;
   flex-direction: column;
 }

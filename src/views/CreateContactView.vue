@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import router from "@/router";
 import BrandedButton from "@/components/forms/BrandedButton.vue";
+import FormComponent from "@/components/forms/FormComponent.vue";
 import FormInput from "@/components/forms/FormInput.vue";
 import FormLabel from "@/components/forms/FormLabel.vue";
 import FormSelect from "@/components/forms/FormSelect.vue";
@@ -41,63 +42,62 @@ const removePhoneNumber = () =>
 </script>
 
 <template>
-<div class="wrapper">
-
-  <form @submit.prevent="handleSubmit">
-    <h1>Create A Contact</h1>
-    <p>Enter details below to create a contact.</p>
-    <FormLabel>First Name <FormInput name="firstName" required /></FormLabel>
-    <FormLabel>Last Name <FormInput name="lastName" required /></FormLabel>
-    <FormLabel>Salutation <FormInput name="salutation" /></FormLabel>
-    <FormLabel
-      >Avatar
-      <FormInput type="file" name="avatar" accept="image/png, image/jpeg" />
-    </FormLabel>
-    <FormLabel>Company Name <FormInput name="company-name" /></FormLabel>
-    <div class="phone-numbers">
-      <div class="phone-number" v-bind:key="n" v-for="n in numPhoneNumbers">
-        <FormLabel for="phone-number">Phone Number</FormLabel>
-        <div class="inputs">
-          <FormInput name="phone-number" type="tel" required />
-          <FormSelect name="phone-number-type">
-            <option value="mobile">Mobile</option>
-            <option value="work">Work</option>
-            <option value="home">Home</option>
-          </FormSelect>
-        </div>
-      </div>
-
-      <div class="buttons">
-        <button @click="addPhoneNumber" type="button">➕</button>
-        <button
-          @click="removePhoneNumber"
-          v-if="numPhoneNumbers > 1"
-          type="button"
-        >
-          ➖
-        </button>
-      </div>
-      <FormLabel v-if="numPhoneNumbers > 1">
-        Primary Number
-        <FormSelect name="primary-number">
-          <option v-for="n in numPhoneNumbers" v-bind:key="n" :value="n">
-            {{ n }}
-          </option>
-        </FormSelect>
+  <div class="wrapper">
+    <FormComponent @submit="handleSubmit">
+      <h1>Create A Contact</h1>
+      <p>Enter details below to create a contact.</p>
+      <FormLabel>First Name <FormInput name="firstName" required /></FormLabel>
+      <FormLabel>Last Name <FormInput name="lastName" required /></FormLabel>
+      <FormLabel>Salutation <FormInput name="salutation" /></FormLabel>
+      <FormLabel
+        >Avatar
+        <FormInput type="file" name="avatar" accept="image/png, image/jpeg" />
       </FormLabel>
-    </div>
-    <BrandedButton class="primary" type="submit">Submit</BrandedButton>
-  </form>
+      <FormLabel>Company Name <FormInput name="company-name" /></FormLabel>
+      <div class="phone-numbers">
+        <div class="phone-number" v-bind:key="n" v-for="n in numPhoneNumbers">
+          <FormLabel for="phone-number">Phone Number</FormLabel>
+          <div class="inputs">
+            <FormInput name="phone-number" type="tel" required />
+            <FormSelect name="phone-number-type">
+              <option value="mobile">Mobile</option>
+              <option value="work">Work</option>
+              <option value="home">Home</option>
+            </FormSelect>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button @click="addPhoneNumber" type="button">➕</button>
+          <button
+            @click="removePhoneNumber"
+            v-if="numPhoneNumbers > 1"
+            type="button"
+          >
+            ➖
+          </button>
+        </div>
+        <FormLabel v-if="numPhoneNumbers > 1">
+          Primary Number
+          <FormSelect name="primary-number">
+            <option v-for="n in numPhoneNumbers" v-bind:key="n" :value="n">
+              {{ n }}
+            </option>
+          </FormSelect>
+        </FormLabel>
+      </div>
+      <BrandedButton class="primary" type="submit">Submit</BrandedButton>
+    </FormComponent>
   </div>
 </template>
 
 <style>
 .wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 form {
   display: flex;
