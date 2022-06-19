@@ -47,7 +47,7 @@ export const useContactsStore = defineStore("contacts", () => {
             number: r.cell,
           },
           {
-            type: "home",
+            type: Math.random() < 0.3 ? "home" : "work",
             number: r.phone,
           },
         ],
@@ -62,6 +62,10 @@ export const useContactsStore = defineStore("contacts", () => {
     contacts.value = contacts.value.map((contact) =>
       contact.id === id ? { ...contact, starred: !contact.starred } : contact
     );
+  };
+
+  const deleteContact = (id) => {
+    contacts.value = contacts.value.filter((contact) => contact.id !== id);
   };
 
   const createContact = async (contact) => {
@@ -84,7 +88,7 @@ export const useContactsStore = defineStore("contacts", () => {
       localStorage.setItem("contacts", JSON.stringify(state));
 
       // update the selected contact, if it's changed
-      setSelectedContact(selectedContact.value.id);
+      if (selectedContact.value) setSelectedContact(selectedContact.value.id);
     },
     { deep: true }
   );
@@ -92,6 +96,7 @@ export const useContactsStore = defineStore("contacts", () => {
   return {
     contacts: { allContacts: contacts, selectedContact },
     createContact,
+    deleteContact,
     getContactById,
     getContacts,
     selectedContact,

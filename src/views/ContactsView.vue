@@ -1,4 +1,5 @@
 <script setup>
+import ButtonLink from "@/components/forms/ButtonLink.vue";
 import ContactCard from "@/components/ContactCard.vue";
 import { useContactsStore } from "@/stores/contacts";
 
@@ -10,7 +11,12 @@ store.getContacts();
   <main class="main-container">
     <section>
       <div :class="['contacts-list', $route.params.id ? 'selected' : '']">
-        <h2>All Contacts</h2>
+        <header>
+          <h2>All Contacts</h2>
+          <ButtonLink to="/contacts/new" class="primary">
+            Create a Contact
+          </ButtonLink>
+        </header>
         <div class="list" v-if="store.contacts.allContacts">
           <p v-if="store.contacts.allContacts.length === 0">
             You have no contacts. Add one to get started!
@@ -39,6 +45,16 @@ section {
   margin-bottom: auto;
 }
 
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+header a {
+  margin-left: auto;
+}
 .body {
   flex: 1;
   display: none;

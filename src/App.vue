@@ -65,6 +65,10 @@ nav.main-nav {
   color: var(--color-text-secondary);
   font-size: 1.6rem;
 }
+
+.main-nav .router-link-active {
+  font-weight: 700;
+}
 .main-nav a:hover {
   color: var(--color-text-primary);
 }

@@ -1,18 +1,23 @@
+<script setup>
+import { RouterLink } from "vue-router";
+</script>
+
 <template>
-  <button><slot /></button>
+  <RouterLink><slot /></RouterLink>
 </template>
 
 <style scoped>
-button {
+a {
   padding: 0.45rem;
   border: 1px solid var(--color-primary);
   border-radius: 0.25rem;
+  text-decoration: none;
   font-size: 1rem;
   color: #333;
   text-transform: uppercase;
   font-weight: 500;
 }
-button.primary {
+a.primary {
   background-color: var(--color-primary);
   color: white;
 }

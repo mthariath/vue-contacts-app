@@ -42,14 +42,12 @@ const removePhoneNumber = () =>
 
 <template>
   <main class="main-container">
+    Create contact
     <form @submit.prevent="handleSubmit">
-      <h1>Create A Contact</h1>
-      <p>Enter details below to create a contact.</p>
       <FormLabel>First Name <FormInput name="firstName" required /></FormLabel>
       <FormLabel>Last Name <FormInput name="lastName" required /></FormLabel>
       <FormLabel>Salutation <FormInput name="salutation" /></FormLabel>
-      <FormLabel
-        >Avatar
+      <FormLabel>Avatar
         <FormInput type="file" name="avatar" accept="image/png, image/jpeg" />
       </FormLabel>
       <FormLabel>Company Name <FormInput name="company-name" /></FormLabel>
@@ -65,17 +63,6 @@ const removePhoneNumber = () =>
             </FormSelect>
           </div>
         </div>
-
-        <div class="buttons">
-          <button @click="addPhoneNumber" type="button">➕</button>
-          <button
-            @click="removePhoneNumber"
-            v-if="numPhoneNumbers > 1"
-            type="button"
-          >
-            ➖
-          </button>
-        </div>
         <FormLabel v-if="numPhoneNumbers > 1">
           Primary Number
           <FormSelect name="primary-number">
@@ -84,6 +71,8 @@ const removePhoneNumber = () =>
             </option>
           </FormSelect>
         </FormLabel>
+
+        <button @click="addPhoneNumber" type="button">+</button>
       </div>
       <BrandedButton class="primary" type="submit">Submit</BrandedButton>
     </form>
@@ -102,26 +91,6 @@ form {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 }
 
-form > h1 {
-    font-size: 1.6rem;
-    font-weight: 600;
-    text-align: center;
-}
-
-form > p {
-    font-size: 1.2rem;
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.phone-numbers {
-  display: flex;
-  flex-direction: column;
-  margin: 1.3rem 0;
-}
-.phone-numbers .buttons {
-  margin-left: auto;
-}
 .phone-number .inputs {
   display: flex;
   flex-direction: row;

@@ -1,7 +1,9 @@
 <script setup>
 import { watch } from "vue";
 import { useRoute } from "vue-router";
+import router from "@/router";
 import { useContactsStore } from "@/stores/contacts";
+import ButtonLink from "@/components/forms/ButtonLink.vue";
 
 const store = useContactsStore();
 const route = useRoute();
@@ -15,10 +17,18 @@ const toggleStarred = () => {
   console.log(store.contacts.selectedContact.starred);
   store.toggleStarred(store.contacts.selectedContact.id);
 };
+
+const deleteContact = () => {
+  if (window.confirm("Are you sure you want to delete this contact?")) {
+    store.deleteContact(store.contacts.selectedContact.id);
+    router.push("/contacts");
+  }
+};
 </script>
 
 <template>
   <div class="contact-body">
+    <ButtonLink to="/contacts" class="back-button primary"> Back to Contacts </ButtonLink>
     <template v-if="!store.contacts.selectedContact">
       Sorry, I couldnt find that contact. Please select one from the list to the
       left.
@@ -53,10 +63,13 @@ const toggleStarred = () => {
           {{ store.contacts.selectedContact.firstName }}
           {{ store.contacts.selectedContact.lastName }}
         </div>
+        <div class="company-name">
+          {{ store.contacts.selectedContact.companyName }}
+        </div>
       </div>
       <div class="actions">
         <button>Edit</button>
-        <button class="delete">Delete</button>
+        <button class="delete" @click="deleteContact">Delete</button>
       </div>
       <div class="phone-numbers">
         <div class="title">Phone Numbers</div>
@@ -66,8 +79,15 @@ const toggleStarred = () => {
               .phoneNumbers"
             v-bind:key="index"
           >
-            <span class="type">{{ number.type }}</span>
-            <span class="number">{{ number.number }}</span>
+            <span class="icon" v-if="number.type === 'mobile'">📱 </span>
+            <span class="icon" v-if="number.type === 'home'">🏠 </span>
+            <span class="icon" v-if="number.type === 'work'">🏢 </span>
+            <div class="text">
+              <span :class="['number', number.type]">{{ number.number }}</span>
+              <span class="type" v-if="number.type === 'mobile'">Mobile</span>
+              <span class="type" v-if="number.type === 'home'">Home</span>
+              <span class="type" v-if="number.type === 'work'">Work</span>
+            </div>
           </li>
         </ul>
       </div>
@@ -82,11 +102,17 @@ article {
   align-items: center;
   justify-content: center;
   margin: auto;
+  margin-top: 1.2rem;
 }
 .contact-body {
   display: flex;
   margin-bottom: auto;
   flex: 1;
+  flex-direction: column;
+}
+.back-button {
+  margin-right: auto;
+  display: block;
 }
 .image {
   height: 8rem;
@@ -102,6 +128,12 @@ article {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.company-name {
+  font-size: 1.5rem;
+  color: rgba(0, 0, 0, 0.5);
+  text-align: center;
 }
 button.star {
   height: 4.2rem;
@@ -139,6 +171,71 @@ button.starred {
 
 button.delete {
   color: rgba(255, 30, 24, 0.6);
+}
+
+.phone-numbers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.phone-numbers .title {
+  font-size: 1.2rem;
+  /* color: rgba(0, 0, 0, 0.5); */
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.phone-numbers ul {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone-numbers li {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+  grid-gap: 1rem;
+}
+
+.phone-numbers li .icon {
+  font-size: 2.5rem;
+}
+.phone-numbers li .text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone-numbers li .number {
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  /* color: rgba(0, 0, 0, 0.8); */
+}
+
+.number.mobile {
+  color: #00bcd4;
+}
+.number.home {
+  color: #4caf50;
+}
+.number.work {
+  color: #ff9800;
+}
+.phone-numbers li .type {
+  font-size: 1.2rem;
+  color: rgba(0, 0, 0, 0.5);
+}
+@media (min-width: 768px) {
+  .back-button {
+    display: none;
+  }
 }
 </style>
 
