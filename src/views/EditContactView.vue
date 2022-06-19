@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from "vue";
+import { useRoute } from "vue-router";
+import { ref, watch } from "vue";
 import router from "@/router";
 import BrandedButton from "@/components/forms/BrandedButton.vue";
 import FormInput from "@/components/forms/FormInput.vue";
@@ -8,6 +9,16 @@ import FormSelect from "@/components/forms/FormSelect.vue";
 import { useContactsStore } from "@/stores/contacts";
 
 const store = useContactsStore();
+const route = useRoute();
+store.getContacts();
+store.setSelectedContact(route.params.id);
+watch(
+  () => route.params.id,
+  (newId) => {
+    store.setSelectedContact(newId);
+  }
+);
+
 store.getContacts();
 const handleSubmit = async (e) => {
   const formData = new FormData(e.target);
@@ -15,71 +26,136 @@ const handleSubmit = async (e) => {
   const phoneNumbers = formData.getAll("phone-number");
   const phoneNumbersTypes = formData.getAll("phone-number-type");
 
-  const newContact = {
-    ...data,
-    id: Math.floor(Math.random() * 100000000000),
-    starred: false,
-    primaryNumber: parseInt(data["primary-number"], 10) - 1 || 0,
+  const editedContact = {
+    ...store.contacts.selectedContact,
+    primaryNumber: parseInt(data["primary-number"], 10) || 0,
     phoneNumbers: phoneNumbers.map((n, i) => ({
       number: n,
       type: phoneNumbersTypes[i],
     })),
   };
-  await store.createContact(newContact);
+  store.editContact(route.params.id, editedContact);
 
-  router.push(`/contacts/${newContact.id}`);
+  router.push(`/contacts/${editedContact.id}`);
 
-  console.log(newContact);
-  console.log(newContact);
+  console.log(editedContact);
 };
+console.log(store.contacts.selectedContact.firstName);
 
-let numPhoneNumbers = ref(1);
+let numPhoneNumbers = ref(store.contacts.selectedContact.phoneNumbers.length);
 
-const addPhoneNumber = () => numPhoneNumbers.value++;
-const removePhoneNumber = () =>
-  numPhoneNumbers.value > 1 && numPhoneNumbers.value--;
+const addPhoneNumber = () => {
+  store.contacts.selectedContact.phoneNumbers = [
+    ...store.contacts.selectedContact.phoneNumbers,
+    { number: null, type: "mobile" },
+  ];
+  numPhoneNumbers.value++;
+};
+const removePhoneNumber = () => {
+  if (numPhoneNumbers.value > 1) {
+    store.contacts.selectedContact.phoneNumbers =
+      store.contacts.selectedContact.phoneNumbers.slice(
+        0,
+        store.contacts.selectedContact.phoneNumbers.length - 1
+      );
+    numPhoneNumbers.value--;
+  }
+};
 </script>
 
 <template>
-  <main class="main-container">
-    Create contact
+<div class="wrapper">
     <form @submit.prevent="handleSubmit">
-      <FormLabel>First Name <FormInput name="firstName" required /></FormLabel>
-      <FormLabel>Last Name <FormInput name="lastName" required /></FormLabel>
-      <FormLabel>Salutation <FormInput name="salutation" /></FormLabel>
-      <FormLabel>Avatar
+    <h1>Create A Contact</h1>
+    <p>Enter details below to create a contact.</p>
+      <FormLabel
+        >First Name
+        <FormInput
+          v-model="store.contacts.selectedContact.firstName"
+          name="firstName"
+          required
+      /></FormLabel>
+      <FormLabel
+        >Last Name
+        <FormInput
+          v-model="store.contacts.selectedContact.lastName"
+          name="lastName"
+          required
+      /></FormLabel>
+      <FormLabel
+        >Salutation
+        <FormInput
+          v-model="store.contacts.selectedContact.salutation"
+          name="salutation"
+      /></FormLabel>
+      <FormLabel
+        >Avatar
         <FormInput type="file" name="avatar" accept="image/png, image/jpeg" />
       </FormLabel>
-      <FormLabel>Company Name <FormInput name="company-name" /></FormLabel>
+      <FormLabel
+        >Company Name
+        <FormInput
+          name="company-name"
+          v-model="store.contacts.selectedContact.companyName"
+      /></FormLabel>
       <div class="phone-numbers">
         <div class="phone-number" v-bind:key="n" v-for="n in numPhoneNumbers">
           <FormLabel for="phone-number">Phone Number</FormLabel>
           <div class="inputs">
-            <FormInput name="phone-number" type="tel" required />
-            <FormSelect name="phone-number-type">
+            <FormInput
+              name="phone-number"
+              type="tel"
+              v-model="
+                store.contacts.selectedContact.phoneNumbers[n - 1].number
+              "
+              required
+            />
+            <FormSelect
+              name="phone-number-type"
+              v-model="store.contacts.selectedContact.phoneNumbers[n - 1].type"
+            >
               <option value="mobile">Mobile</option>
               <option value="work">Work</option>
               <option value="home">Home</option>
             </FormSelect>
           </div>
         </div>
+        
+
+        <div class="buttons">
+        <button @click="addPhoneNumber" type="button">➕</button>
+        <button
+          @click="removePhoneNumber"
+          v-if="numPhoneNumbers > 1"
+          type="button"
+        >
+          ➖
+        </button>
+      </div>
         <FormLabel v-if="numPhoneNumbers > 1">
           Primary Number
-          <FormSelect name="primary-number">
-            <option v-for="n in numPhoneNumbers" v-bind:key="n" :value="n">
+          <FormSelect
+            name="primary-number"
+            v-model="store.contacts.selectedContact.primaryNumber"
+          >
+            <option v-for="n in numPhoneNumbers" v-bind:key="n" :value="n - 1">
               {{ n }}
             </option>
           </FormSelect>
         </FormLabel>
-
-        <button @click="addPhoneNumber" type="button">+</button>
       </div>
       <BrandedButton class="primary" type="submit">Submit</BrandedButton>
     </form>
-  </main>
+  </div>
 </template>
 
 <style>
+.wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 form {
   display: flex;
   flex-direction: column;
@@ -91,11 +167,27 @@ form {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 }
 
+form > h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+form > p {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
 .phone-number .inputs {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 1rem;
+}
+
+.phone-numbers .buttons {
+  margin-left: auto;
 }
 
 @media (min-width: 768px) {

@@ -15,18 +15,18 @@ const router = createRouter({
       component: () => import("../views/ContactsView.vue"),
       children: [
         {
-          // UserProfile will be rendered inside User's <router-view>
-          // when /user/:id/profile is matched
+          path: "new",
+          component: () => import("../views/CreateContactView.vue"),
+        },
+        {
           path: ":id",
           component: () => import("../views/ContactView.vue"),
         },
+        {
+          path: ":id/edit",
+          component: () => import("../views/EditContactView.vue"),
+        },
       ],
-    },
-
-    {
-      path: "/contacts/new",
-      name: "create-contact",
-      component: () => import("../views/CreateContactView.vue"),
     },
   ],
 });

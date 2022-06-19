@@ -1,6 +1,6 @@
 <script setup>
 import { watch } from "vue";
-import { useRoute } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 import router from "@/router";
 import { useContactsStore } from "@/stores/contacts";
 import ButtonLink from "@/components/forms/ButtonLink.vue";
@@ -9,9 +9,12 @@ const store = useContactsStore();
 const route = useRoute();
 store.getContacts();
 store.setSelectedContact(route.params.id);
-watch(route, (state) => {
-  store.setSelectedContact(state.params.id);
-});
+watch(
+  () => route.params.id,
+  (newId) => {
+    store.setSelectedContact(newId);
+  }
+);
 
 const toggleStarred = () => {
   console.log(store.contacts.selectedContact.starred);
@@ -28,7 +31,9 @@ const deleteContact = () => {
 
 <template>
   <div class="contact-body">
-    <ButtonLink to="/contacts" class="back-button primary"> Back to Contacts </ButtonLink>
+    <ButtonLink to="/contacts" class="back-button primary">
+      Back to Contacts
+    </ButtonLink>
     <template v-if="!store.contacts.selectedContact">
       Sorry, I couldnt find that contact. Please select one from the list to the
       left.
@@ -68,7 +73,9 @@ const deleteContact = () => {
         </div>
       </div>
       <div class="actions">
-        <button>Edit</button>
+        <RouterLink :to="`/contacts/${store.contacts.selectedContact.id}/edit`"
+          >Edit</RouterLink
+        >
         <button class="delete" @click="deleteContact">Delete</button>
       </div>
       <div class="phone-numbers">
@@ -128,6 +135,7 @@ article {
   display: flex;
   flex-direction: row;
   align-items: center;
+  text-align: center;
 }
 
 .company-name {
@@ -156,7 +164,8 @@ button.starred {
   width: 100%;
 }
 
-.actions button {
+.actions button,
+.actions a {
   background: none;
   border: none;
   font-size: 1.2rem;
@@ -164,6 +173,8 @@ button.starred {
   cursor: pointer;
   text-transform: uppercase;
   font-weight: 700;
+  text-align: center;
+  text-decoration: none;
   color: rgba(0, 0, 0, 0.6);
   background: rgba(255, 255, 255, 0.3);
   flex: 1;
@@ -235,19 +246,6 @@ button.delete {
 @media (min-width: 768px) {
   .back-button {
     display: none;
-  }
-}
-</style>
-
-<style>
-.contacts-list.selected {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .contacts-list.selected {
-    display: block;
-    flex: 1;
   }
 }
 </style>

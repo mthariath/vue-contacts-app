@@ -8,9 +8,9 @@ export const useContactsStore = defineStore("contacts", () => {
   const selectedContact = ref({});
 
   const setSelectedContact = (id) =>
-    (selectedContact.value = contacts.value.find(
-      (contact) => contact.id == id
-    ));
+    (selectedContact.value = {
+      ...contacts.value.find((contact) => contact.id == id),
+    });
 
   const getContactById = (id) =>
     contacts.value.find((contact) => contact.id == id);
@@ -81,6 +81,12 @@ export const useContactsStore = defineStore("contacts", () => {
     contacts.value.sort((a, b) => a.firstName > b.firstName);
   };
 
+  const editContact = (id, editedContact) => {
+    contacts.value = contacts.value.map((contact) =>
+      contact.id == id ? { ...contact, ...editedContact } : contact
+    );
+  };
+
   watch(
     contacts,
     (state) => {
@@ -97,6 +103,7 @@ export const useContactsStore = defineStore("contacts", () => {
     contacts: { allContacts: contacts, selectedContact },
     createContact,
     deleteContact,
+    editContact,
     getContactById,
     getContacts,
     selectedContact,

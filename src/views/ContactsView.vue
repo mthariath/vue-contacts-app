@@ -1,8 +1,10 @@
 <script setup>
 import ButtonLink from "@/components/forms/ButtonLink.vue";
 import ContactCard from "@/components/ContactCard.vue";
+import { useRoute } from "vue-router";
 import { useContactsStore } from "@/stores/contacts";
 
+const route = useRoute();
 const store = useContactsStore();
 store.getContacts();
 </script>
@@ -10,7 +12,9 @@ store.getContacts();
 <template>
   <main class="main-container">
     <section>
-      <div :class="['contacts-list', $route.params.id ? 'selected' : '']">
+      <div
+        :class="['contacts-list', $route.matched.length > 1 ? 'nested' : '']"
+      >
         <header>
           <h2>All Contacts</h2>
           <ButtonLink to="/contacts/new" class="primary">
@@ -29,7 +33,7 @@ store.getContacts();
           </template>
         </div>
       </div>
-      <div class="body" v-if="!$route.params.id">
+      <div class="body" v-if="$route.matched.length === 1">
         <p>Select a contact to view their details.</p>
       </div>
       <router-view></router-view>
@@ -43,6 +47,7 @@ section {
   flex-direction: row;
   width: 100%;
   margin-bottom: auto;
+  flex: 1;
 }
 
 header {
@@ -82,6 +87,17 @@ p {
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.contacts-list.nested {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .contacts-list.nested {
+    display: block;
+    flex: 1;
+  }
 }
 .contacts-list h2 {
   font-size: 1.1rem;
