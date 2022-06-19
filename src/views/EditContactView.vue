@@ -1,8 +1,9 @@
 <script setup>
-import { useRoute } from "vue-router";
+import { onBeforeRouteLeave, useRoute } from "vue-router";
 import { ref, watch } from "vue";
 import router from "@/router";
 import BrandedButton from "@/components/forms/BrandedButton.vue";
+import ButtonLink from "@/components/forms/ButtonLink.vue";
 import FormInput from "@/components/forms/FormInput.vue";
 import FormLabel from "@/components/forms/FormLabel.vue";
 import FormSelect from "@/components/forms/FormSelect.vue";
@@ -19,7 +20,6 @@ watch(
   }
 );
 
-store.getContacts();
 const handleSubmit = async (e) => {
   const formData = new FormData(e.target);
   const data = Object.fromEntries(formData);
@@ -36,9 +36,15 @@ const handleSubmit = async (e) => {
   };
   store.editContact(route.params.id, editedContact);
 
+  formChanged.value = false;
   router.push(`/contacts/${editedContact.id}`);
 
   console.log(editedContact);
+};
+
+const formChanged = ref(false);
+const handleFormChange = () => {
+  formChanged.value = true;
 };
 console.log(store.contacts.selectedContact.firstName);
 
@@ -61,13 +67,29 @@ const removePhoneNumber = () => {
     numPhoneNumbers.value--;
   }
 };
+
+onBeforeRouteLeave(() => {
+  if (formChanged.value) {
+    const answer = window.confirm(
+      "Do you really want to leave? you have unsaved changes!"
+    );
+    if (!answer) return false;
+  }
+  return true;
+});
 </script>
 
 <template>
-<div class="wrapper">
-    <form @submit.prevent="handleSubmit">
-    <h1>Create A Contact</h1>
-    <p>Enter details below to create a contact.</p>
+  <div class="wrapper">
+    <ButtonLink
+      :to="`/contacts/${route.params.id}`"
+      class="back-button primary"
+    >
+      Go Back
+    </ButtonLink>
+    <form @submit.prevent="handleSubmit" @change="handleFormChange">
+      <h1>Edit Contact</h1>
+      <p>Editing contact details.</p>
       <FormLabel
         >First Name
         <FormInput
@@ -120,18 +142,17 @@ const removePhoneNumber = () => {
             </FormSelect>
           </div>
         </div>
-        
 
         <div class="buttons">
-        <button @click="addPhoneNumber" type="button">➕</button>
-        <button
-          @click="removePhoneNumber"
-          v-if="numPhoneNumbers > 1"
-          type="button"
-        >
-          ➖
-        </button>
-      </div>
+          <button @click="addPhoneNumber" type="button">➕</button>
+          <button
+            @click="removePhoneNumber"
+            v-if="numPhoneNumbers > 1"
+            type="button"
+          >
+            ➖
+          </button>
+        </div>
         <FormLabel v-if="numPhoneNumbers > 1">
           Primary Number
           <FormSelect
@@ -144,22 +165,37 @@ const removePhoneNumber = () => {
           </FormSelect>
         </FormLabel>
       </div>
-      <BrandedButton class="primary" type="submit">Submit</BrandedButton>
+      <ButtonLink
+      :to="`/contacts/${route.params.id}`"
+          >
+      {{formChanged ? "Discard Changes" : "Go Back"}}
+    </ButtonLink>
+      <BrandedButton v-if="formChanged" class="primary" type="submit"
+        >Submit</BrandedButton
+      >
     </form>
   </div>
 </template>
 
 <style>
 .wrapper {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
+
+.back-button {
+  margin-right: auto;
+  display: block;
+}
+
 form {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  grid-gap: 0.6rem;
   margin: auto;
   background-color: rgba(255, 255, 255, 0.7);
   padding: 1rem;
@@ -194,6 +230,10 @@ form > p {
   .phone-number .inputs {
     display: grid;
     grid-template-columns: 1.618fr 1fr;
+  }
+
+  .back-button {
+    display: none;
   }
 }
 </style>

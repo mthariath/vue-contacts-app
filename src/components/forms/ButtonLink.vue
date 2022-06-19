@@ -15,6 +15,7 @@ a {
   font-size: 1rem;
   color: #333;
   text-transform: uppercase;
+  text-align: center;;
   font-weight: 500;
 }
 a.primary {

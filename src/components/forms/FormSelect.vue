@@ -1,5 +1,13 @@
+<script setup>
+defineProps(["modelValue"]);
+defineEmits(["update:modelValue"]);
+</script>
+
 <template>
-  <select>
+  <select
+    :value="modelValue"
+    @input="$emit('update:modelValue', $event.target.value)"
+  >
     <slot />
   </select>
 </template>

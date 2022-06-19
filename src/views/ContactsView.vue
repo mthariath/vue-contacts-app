@@ -87,6 +87,7 @@ p {
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  align-self: center;
 }
 
 .contacts-list.nested {

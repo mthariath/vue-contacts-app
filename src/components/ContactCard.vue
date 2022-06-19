@@ -96,7 +96,8 @@ button.starred {
   flex-direction: column;
 }
 .name {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
   margin-bottom: 0;
 }
 .image {
@@ -109,7 +110,7 @@ button.starred {
 }
 
 .tel {
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   color: #999;
 }
 
@@ -121,6 +122,12 @@ button.starred {
 @media (min-width: 1024px) {
   .wrapper {
     grid-template-columns: 5rem 1fr;
+  }
+  .name {
+    font-size: 1.5rem;
+  }
+  .tel {
+    font-size: 1.2rem;
   }
   .card {
     padding: 1rem;
