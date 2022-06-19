@@ -5,9 +5,12 @@ import { RouterLink, RouterView } from "vue-router";
 <template>
   <header class="main-header">
     <div class="logo">
-      <router-link to="/"> <span class="icon">👥</span> <span class="mobile-hide">The Contacts App</span></router-link>
+      <router-link to="/">
+        <img src="/logo.svg" alt="The Contacts App Logo" />
+        <span class="mobile-hide">The Contacts App</span></router-link
+      >
     </div>
-    <nav class="main-nav ">
+    <nav class="main-nav">
       <RouterLink to="/">Home</RouterLink>
       <RouterLink to="/contacts">Contacts</RouterLink>
     </nav>
@@ -45,6 +48,12 @@ import { RouterLink, RouterView } from "vue-router";
   display: flex;
   align-items: center;
   grid-gap: 1rem;
+}
+
+.logo img {
+  width: 3rem;
+  height: 3rem;
+  margin-right: 0.5rem;
 }
 
 .logo .icon {
