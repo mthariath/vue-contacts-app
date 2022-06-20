@@ -80,7 +80,6 @@ p {
 
 .starred-contacts {
   flex: 1;
-
 }
 .starred-contacts > p {
   margin: auto;

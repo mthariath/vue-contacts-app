@@ -1,4 +1,4 @@
-import { ref, computed, watch } from "vue";
+import { ref, watch } from "vue";
 import { defineStore } from "pinia";
 import { randomCompanies } from "./defaultData";
 
@@ -7,14 +7,28 @@ export const useContactsStore = defineStore("contacts", () => {
 
   const selectedContact = ref({});
 
-  const setSelectedContact = (id) =>
-    (selectedContact.value = {
+  /**
+   * This function sets the selected contact that is currently being viewed or edited.
+   * @param  id the ID of the contact to select
+   */
+  const setSelectedContact = (id) => {
+    selectedContact.value = {
       ...contacts.value.find((contact) => contact.id == id),
-    });
+    };
+  };
 
+  /**
+   *
+   * @param  id The ID of the contact to retreive
+   * @returns The contact with the given ID
+   */
   const getContactById = (id) =>
     contacts.value.find((contact) => contact.id == id);
 
+  /**
+   * This function loads the saved contacts from local storage, or if there are none,
+   * it loads default contacts from a random user generator API.
+   */
   const getContacts = async () => {
     if (localStorage.getItem("contacts")) {
       console.log(JSON.parse(localStorage.getItem("contacts")));
@@ -58,16 +72,28 @@ export const useContactsStore = defineStore("contacts", () => {
     }
   };
 
+  /**
+   * This function toggles the starred status of a contact.
+   * @param  id The ID of the contact whose star status is to be toggled.
+   */
   const toggleStarred = async (id) => {
     contacts.value = contacts.value.map((contact) =>
       contact.id === id ? { ...contact, starred: !contact.starred } : contact
     );
   };
 
+  /**
+   * This function deletes a contact from the store.
+   * @param id The ID of the contact to delete.
+   */
   const deleteContact = (id) => {
     contacts.value = contacts.value.filter((contact) => contact.id !== id);
   };
 
+  /**
+   * This function adds a new contact to the store.
+   * @param contact The contact to add.
+   */
   const createContact = async (contact) => {
     console.log("contacts.value", contacts.value);
     const response = await fetch(`https://randomuser.me/api/?results=1`);
@@ -81,6 +107,11 @@ export const useContactsStore = defineStore("contacts", () => {
     contacts.value.sort((a, b) => a.firstName > b.firstName);
   };
 
+  /**
+   *
+   * @param id The ID of the contact to update.
+   * @param editedContact The edited contact to update.
+   */
   const editContact = (id, editedContact) => {
     contacts.value = contacts.value.map((contact) =>
       contact.id == id ? { ...contact, ...editedContact } : contact

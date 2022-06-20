@@ -2,10 +2,8 @@
 import BasicBox from "@/components/BasicBox.vue";
 import ButtonLink from "@/components/forms/ButtonLink.vue";
 import ContactCard from "@/components/ContactCard.vue";
-import { useRoute } from "vue-router";
 import { useContactsStore } from "@/stores/contacts";
 
-const route = useRoute();
 const store = useContactsStore();
 store.getContacts();
 </script>
