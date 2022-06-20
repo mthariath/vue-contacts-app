@@ -38,11 +38,7 @@ const handleSubmit = async (e) => {
   store.editContact(route.params.id, editedContact);
 
   router.push(`/contacts/${editedContact.id}`);
-
-  console.log(editedContact);
 };
-
-console.log(store.contacts.selectedContact.firstName);
 
 let numPhoneNumbers = ref(store.contacts.selectedContact.phoneNumbers.length);
 
@@ -69,7 +65,6 @@ const removePhoneNumber = () => {
 const formChanged = ref(false);
 const handleFormChange = () => {
   formChanged.value = true;
-  console.log("inside form");
 };
 </script>
 

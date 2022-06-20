@@ -10,7 +10,6 @@ const props = defineProps({
 const formChanged = ref(false);
 const handleFormChange = () => {
   formChanged.value = true;
-  console.log("inside form");
 };
 
 onBeforeRouteLeave(() => {

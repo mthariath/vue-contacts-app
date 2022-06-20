@@ -31,44 +31,47 @@ export const useContactsStore = defineStore("contacts", () => {
    */
   const getContacts = async () => {
     if (localStorage.getItem("contacts")) {
-      console.log(JSON.parse(localStorage.getItem("contacts")));
       contacts.value = JSON.parse(localStorage.getItem("contacts"));
     } else {
-      const response = await fetch(
-        `https://randomuser.me/api/?results=${Math.round(
-          (Math.random() * 100) / 2.5 + 5
-        )}`
-      );
-      const data = await response.json();
-      const randomContacts = data.results.map((r) => ({
-        id: Math.floor(Math.random() * 100000000000),
-        firstName: r.name.first,
-        lastName: r.name.last,
-        salutation: r.name.title,
-        thumbnail: r.picture.thumbnail,
-        image: r.picture.large,
-        starred: Math.random() > 0.3,
-        companyName:
-          Math.random() > 0.4
-            ? null
-            : randomCompanies[
-                Math.floor(Math.random() * randomCompanies.length)
-              ],
-        primaryNumber: Math.random() < 0.3 ? 1 : 0,
-        phoneNumbers: [
-          {
-            type: "mobile",
-            number: r.cell,
-          },
-          {
-            type: Math.random() < 0.3 ? "home" : "work",
-            number: r.phone,
-          },
-        ],
-      }));
-      console.log(data);
-      console.log(randomContacts);
-      contacts.value = randomContacts.sort((a, b) => a.firstName > b.firstName);
+      try {
+        const response = await fetch(
+          `https://randomuser.me/api/?results=${Math.round(
+            (Math.random() * 100) / 2.5 + 5
+          )}`
+        );
+        const data = await response.json();
+        const randomContacts = data.results.map((r) => ({
+          id: Math.floor(Math.random() * 100000000000),
+          firstName: r.name.first,
+          lastName: r.name.last,
+          salutation: r.name.title,
+          thumbnail: r.picture.thumbnail,
+          image: r.picture.large,
+          starred: Math.random() > 0.3,
+          companyName:
+            Math.random() > 0.4
+              ? null
+              : randomCompanies[
+                  Math.floor(Math.random() * randomCompanies.length)
+                ],
+          primaryNumber: Math.random() < 0.3 ? 1 : 0,
+          phoneNumbers: [
+            {
+              type: "mobile",
+              number: r.cell,
+            },
+            {
+              type: Math.random() < 0.3 ? "home" : "work",
+              number: r.phone,
+            },
+          ],
+        }));
+        contacts.value = randomContacts.sort(
+          (a, b) => a.firstName > b.firstName
+        );
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -95,16 +98,19 @@ export const useContactsStore = defineStore("contacts", () => {
    * @param contact The contact to add.
    */
   const createContact = async (contact) => {
-    console.log("contacts.value", contacts.value);
-    const response = await fetch(`https://randomuser.me/api/?results=1`);
-    const data = await response.json();
-    contacts.value.push({
-      ...contact,
-      id: contact.id || Math.floor(Math.random() * 100000000000),
-      thumbnail: data.results[0].picture.thumbnail,
-      image: data.results[0].picture.large,
-    });
-    contacts.value.sort((a, b) => a.firstName > b.firstName);
+    try {
+      const response = await fetch(`https://randomuser.me/api/?results=1`);
+      const data = await response.json();
+      contacts.value.push({
+        ...contact,
+        id: contact.id || Math.floor(Math.random() * 100000000000),
+        thumbnail: data.results[0].picture.thumbnail,
+        image: data.results[0].picture.large,
+      });
+      contacts.value.sort((a, b) => a.firstName > b.firstName);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   /**
