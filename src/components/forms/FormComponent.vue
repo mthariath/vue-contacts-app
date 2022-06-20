@@ -23,7 +23,7 @@ onBeforeRouteLeave(() => {
   return true;
 });
 
-const onSubmit = () => formChanged.value = false
+const onSubmit = () => (formChanged.value = false);
 </script>
 
 <template>

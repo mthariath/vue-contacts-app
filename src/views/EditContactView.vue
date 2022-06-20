@@ -52,7 +52,7 @@ const addPhoneNumber = () => {
     { number: null, type: "mobile" },
   ];
   numPhoneNumbers.value++;
-  formChanged.value = true
+  formChanged.value = true;
 };
 const removePhoneNumber = () => {
   if (numPhoneNumbers.value > 1) {
@@ -62,7 +62,7 @@ const removePhoneNumber = () => {
         store.contacts.selectedContact.phoneNumbers.length - 1
       );
     numPhoneNumbers.value--;
-    formChanged.value = true
+    formChanged.value = true;
   }
 };
 

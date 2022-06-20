@@ -1,5 +1,4 @@
 <script setup>
-import { RouterLink } from "vue-router";
 import { useContactsStore } from "@/stores/contacts";
 
 const store = useContactsStore();
@@ -23,7 +22,11 @@ const toggleStarred = () => store.toggleStarred(props.contact.id);
   <div
     :class="[$route.params.id == props.contact.id ? 'selected' : '', 'wrapper']"
   >
-    <button v-if="props.contact.starred" @click="toggleStarred" class="star starred">
+    <button
+      v-if="props.contact.starred"
+      @click="toggleStarred"
+      class="star starred"
+    >
       ⭐
     </button>
     <button v-if="!props.contact.starred" @click="toggleStarred" class="star">
