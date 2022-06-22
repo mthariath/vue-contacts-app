@@ -29,9 +29,6 @@ const handleSubmit = async (e) => {
   await store.createContact(newContact);
 
   router.push(`/contacts/${newContact.id}`);
-
-  console.log(newContact);
-  console.log(newContact);
 };
 
 let numPhoneNumbers = ref(1);

@@ -17,7 +17,6 @@ watch(
 );
 
 const toggleStarred = () => {
-  console.log(store.contacts.selectedContact.starred);
   store.toggleStarred(store.contacts.selectedContact.id);
 };
 

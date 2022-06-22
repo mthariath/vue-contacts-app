@@ -2,7 +2,9 @@
 import BasicBox from "@/components/BasicBox.vue";
 import ContactCard from "@/components/ContactCard.vue";
 import ButtonLink from "@/components/forms/ButtonLink.vue";
+import ErrorDisplay from "@/components/ErrorDisplay.vue";
 import { useContactsStore } from "@/stores/contacts";
+
 
 const store = useContactsStore();
 store.getContacts();
@@ -21,7 +23,16 @@ store.getContacts();
       </div>
       <BasicBox class="starred-contacts">
         <h2>Starred Contacts</h2>
-        <p v-if="store.contacts.allContacts.length === 0">
+
+        <p v-if="store.contacts.isLoading">
+          Just a sec, loading up your contacts...
+        </p>
+        <ErrorDisplay :errors="store.contacts.errors" v-if="store.contacts.errors.length" />
+        <p
+          v-if="
+            store.contacts.allContacts.length === 0 && !store.contacts.isLoading
+          "
+        >
           You don't have any starred contacts. Star your favorite contacts to
           access them here easily.
         </p>

@@ -7,6 +7,8 @@ export const useContactsStore = defineStore("contacts", () => {
 
   const selectedContact = ref({});
 
+  const isLoading = ref(true);
+  const errors = ref([]);
   /**
    * This function sets the selected contact that is currently being viewed or edited.
    * @param  id the ID of the contact to select
@@ -30,45 +32,57 @@ export const useContactsStore = defineStore("contacts", () => {
    * it loads default contacts from a random user generator API.
    */
   const getContacts = async () => {
+    isLoading.value = true;
+    errors.value = [];
     if (localStorage.getItem("contacts")) {
-      console.log(JSON.parse(localStorage.getItem("contacts")));
       contacts.value = JSON.parse(localStorage.getItem("contacts"));
+      isLoading.value = false;
+      errors.value = [];
     } else {
-      const response = await fetch(
-        `https://randomuser.me/api/?results=${Math.round(
-          (Math.random() * 100) / 2.5 + 5
-        )}`
-      );
-      const data = await response.json();
-      const randomContacts = data.results.map((r) => ({
-        id: Math.floor(Math.random() * 100000000000),
-        firstName: r.name.first,
-        lastName: r.name.last,
-        salutation: r.name.title,
-        thumbnail: r.picture.thumbnail,
-        image: r.picture.large,
-        starred: Math.random() > 0.3,
-        companyName:
-          Math.random() > 0.4
-            ? null
-            : randomCompanies[
-                Math.floor(Math.random() * randomCompanies.length)
-              ],
-        primaryNumber: Math.random() < 0.3 ? 1 : 0,
-        phoneNumbers: [
-          {
-            type: "mobile",
-            number: r.cell,
-          },
-          {
-            type: Math.random() < 0.3 ? "home" : "work",
-            number: r.phone,
-          },
-        ],
-      }));
-      console.log(data);
-      console.log(randomContacts);
-      contacts.value = randomContacts.sort((a, b) => a.firstName > b.firstName);
+      try {
+        const response = await fetch(
+          `https://randomuser.me/api/?results=${Math.round(
+            (Math.random() * 100) / 2.5 + 5
+          )}`
+        );
+        const data = await response.json();
+        const randomContacts = data.results.map((r) => ({
+          id: Math.floor(Math.random() * 100000000000),
+          firstName: r.name.first,
+          lastName: r.name.last,
+          salutation: r.name.title,
+          thumbnail: r.picture.thumbnail,
+          image: r.picture.large,
+          starred: Math.random() > 0.3,
+          companyName:
+            Math.random() > 0.4
+              ? null
+              : randomCompanies[
+                  Math.floor(Math.random() * randomCompanies.length)
+                ],
+          primaryNumber: Math.random() < 0.3 ? 1 : 0,
+          phoneNumbers: [
+            {
+              type: "mobile",
+              number: r.cell,
+            },
+            {
+              type: Math.random() < 0.3 ? "home" : "work",
+              number: r.phone,
+            },
+          ],
+        }));
+        contacts.value = randomContacts.sort(
+          (a, b) => a.firstName > b.firstName
+        );
+        isLoading.value = false;
+        errors.value = [];
+      } catch (err) {
+        errors.value = [
+          "There was an error loading your data. Please try again.",
+        ];
+        console.log(err);
+      }
     }
   };
 
@@ -95,16 +109,27 @@ export const useContactsStore = defineStore("contacts", () => {
    * @param contact The contact to add.
    */
   const createContact = async (contact) => {
-    console.log("contacts.value", contacts.value);
-    const response = await fetch(`https://randomuser.me/api/?results=1`);
-    const data = await response.json();
-    contacts.value.push({
-      ...contact,
-      id: contact.id || Math.floor(Math.random() * 100000000000),
-      thumbnail: data.results[0].picture.thumbnail,
-      image: data.results[0].picture.large,
-    });
-    contacts.value.sort((a, b) => a.firstName > b.firstName);
+    isLoading.value = true;
+    errors.value = [];
+    try {
+      const response = await fetch(`https://randomuser.me/api/?results=1`);
+      const data = await response.json();
+      contacts.value.push({
+        ...contact,
+        id: contact.id || Math.floor(Math.random() * 100000000000),
+        thumbnail: data.results[0].picture.thumbnail,
+        image: data.results[0].picture.large,
+      });
+      contacts.value.sort((a, b) => a.firstName > b.firstName);
+      isLoading.value = false;
+      errors.value = [];
+    } catch (err) {
+      console.log(err);
+      isLoading.value = false;
+      errors.value = [
+        "There was an error creating your contact. Please try again.",
+      ];
+    }
   };
 
   /**
@@ -131,7 +156,7 @@ export const useContactsStore = defineStore("contacts", () => {
   );
 
   return {
-    contacts: { allContacts: contacts, selectedContact },
+    contacts: { allContacts: contacts, errors, selectedContact, isLoading },
     createContact,
     deleteContact,
     editContact,
