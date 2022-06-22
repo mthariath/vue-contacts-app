@@ -7,6 +7,8 @@ export const useContactsStore = defineStore("contacts", () => {
 
   const selectedContact = ref({});
 
+  const isLoading = ref(true);
+  const errors = ref([]);
   /**
    * This function sets the selected contact that is currently being viewed or edited.
    * @param  id the ID of the contact to select
@@ -30,8 +32,12 @@ export const useContactsStore = defineStore("contacts", () => {
    * it loads default contacts from a random user generator API.
    */
   const getContacts = async () => {
+    isLoading.value = true;
+    errors.value = [];
     if (localStorage.getItem("contacts")) {
       contacts.value = JSON.parse(localStorage.getItem("contacts"));
+      isLoading.value = false;
+      errors.value = [];
     } else {
       try {
         const response = await fetch(
@@ -69,7 +75,12 @@ export const useContactsStore = defineStore("contacts", () => {
         contacts.value = randomContacts.sort(
           (a, b) => a.firstName > b.firstName
         );
+        isLoading.value = false;
+        errors.value = [];
       } catch (err) {
+        errors.value = [
+          "There was an error loading your data. Please try again.",
+        ];
         console.log(err);
       }
     }
@@ -98,6 +109,8 @@ export const useContactsStore = defineStore("contacts", () => {
    * @param contact The contact to add.
    */
   const createContact = async (contact) => {
+    isLoading.value = true;
+    errors.value = [];
     try {
       const response = await fetch(`https://randomuser.me/api/?results=1`);
       const data = await response.json();
@@ -108,8 +121,14 @@ export const useContactsStore = defineStore("contacts", () => {
         image: data.results[0].picture.large,
       });
       contacts.value.sort((a, b) => a.firstName > b.firstName);
+      isLoading.value = false;
+      errors.value = [];
     } catch (err) {
       console.log(err);
+      isLoading.value = false;
+      errors.value = [
+        "There was an error creating your contact. Please try again.",
+      ];
     }
   };
 
@@ -137,7 +156,7 @@ export const useContactsStore = defineStore("contacts", () => {
   );
 
   return {
-    contacts: { allContacts: contacts, selectedContact },
+    contacts: { allContacts: contacts, errors, selectedContact, isLoading },
     createContact,
     deleteContact,
     editContact,

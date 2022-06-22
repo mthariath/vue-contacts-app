@@ -2,6 +2,7 @@
 import BasicBox from "@/components/BasicBox.vue";
 import ButtonLink from "@/components/forms/ButtonLink.vue";
 import ContactCard from "@/components/ContactCard.vue";
+import ErrorDisplay from "@/components/ErrorDisplay.vue";
 import { useContactsStore } from "@/stores/contacts";
 
 const store = useContactsStore();
@@ -21,9 +22,22 @@ store.getContacts();
           </ButtonLink>
         </header>
         <div class="list" v-if="store.contacts.allContacts">
-          <p v-if="store.contacts.allContacts.length === 0">
+          <p
+            v-if="
+              store.contacts.allContacts.length === 0 &&
+              !store.contacts.isLoading
+            "
+          >
             You have no contacts. Add one to get started!
           </p>
+
+          <p v-if="store.contacts.isLoading">
+            Just a sec, loading up your contacts...
+          </p>
+          <ErrorDisplay
+            :errors="store.contacts.errors"
+            v-if="store.contacts.errors.length"
+          />
           <template
             v-for="contact of store.contacts.allContacts"
             v-bind:key="contact.id"
